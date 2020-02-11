@@ -6,6 +6,7 @@ struct SettingsView: View {
     @Binding var locale: Locale
     @Binding var colorScheme: Bool
     @Binding var textSize: ContentSizeCategory
+    @State private var controlWidth: CGFloat = ControlWidth.defaultValue
     
     var body: some View {
         VStack {
@@ -17,6 +18,9 @@ struct SettingsView: View {
                 localeSelector.edgePadding()
             }
             textSizeSlider.edgePadding()
+        }
+        .onPreferenceChange(ControlWidth.self) {
+            self.controlWidth = $0
         }
     }
 }
@@ -34,44 +38,17 @@ private extension SettingsView {
     }
     
     var localeSelector: some View {
-        HStack {
-            Text("Locale").settingsStyle()
-            Spacer(minLength: 0)
-            Picker("", selection: $locale) {
-                ForEach(locales, id: \.self) { locale in
-                    Text(locale.identifier)
-                }
-            }.pickerStyle(SegmentedPickerStyle())
-            .frame(maxWidth: 100, alignment: .trailing)
-        }
+        SettingsView.Picker(
+            title: "Locale", pickerWidth: controlWidth, value: $locale,
+            values: locales, valueTitle: { $0.identifier })
     }
     
     var textSizeSlider: some View {
-        SliderSettingView(
-            title: "Text", value: textSizeBinding,
+        SettingsView.Slider(
+            title: "Text", sliderWidth: controlWidth, value: textSizeBinding,
             stride: ContentSizeCategory.stride) {
                 self.textSize.name
             }
-    }
-}
-
-private struct SliderSettingView: View {
-    
-    let title: LocalizedStringKey
-    let value: Binding<CGFloat>
-    let stride: CGFloat
-    let valueTitle: () -> String
-    
-    var body: some View {
-        HStack {
-            Text(title).settingsStyle()
-            Spacer(minLength: 8)
-            Slider(value: value, in: 0 ... 1, step: stride)
-                .frame(maxWidth: 150, alignment: .trailing)
-                .background(Text(valueTitle())
-                    .font(.footnote).fontWeight(.light)
-                    .offset(x: 0, y: 20))
-        }.padding(.bottom, 14)
     }
 }
 
@@ -89,9 +66,9 @@ private extension SettingsView {
     }
 }
 
-// MARK: - Helpers
+// MARK: - Styling
 
-private extension Text {
+extension Text {
     func settingsStyle() -> Text {
         font(.footnote).bold()
     }
@@ -102,6 +79,8 @@ private extension View {
         padding([.leading, .trailing], 8)
     }
 }
+
+// MARK: - Helpers
 
 extension ContentSizeCategory {
     static var stride: CGFloat {
@@ -130,7 +109,7 @@ extension ContentSizeCategory {
     }
 }
 
-// MARK: - Previews
+#if DEBUG
 
 struct SettingsView_Previews: PreviewProvider {
     
@@ -174,3 +153,5 @@ extension Binding {
         self.init(get: { value }, set: { value = $0 })
     }
 }
+
+#endif

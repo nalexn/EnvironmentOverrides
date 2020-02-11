@@ -72,6 +72,8 @@ private extension BaseView {
     }
 }
 
+#if DEBUG
+
 struct BaseView_Previews: PreviewProvider {
     static var previews: some View {
         Group {
@@ -85,3 +87,5 @@ struct BaseView_Previews: PreviewProvider {
         .previewLayout(.fixed(width: 120, height: 120))
     }
 }
+
+#endif
