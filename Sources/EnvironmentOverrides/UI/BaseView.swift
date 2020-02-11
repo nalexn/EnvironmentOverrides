@@ -20,17 +20,24 @@ private extension BaseView {
     var toggleOffset: CGFloat { 0.19 }
     var toggleHeight: CGFloat { 0.24 }
     var strokeFactor: CGFloat { 0.09 }
+    var strokeColor: Color { Color(UIColor.separator) }
+    var bgColor: Color { Color(UIColor.tertiarySystemBackground) }
     
     var box: some View {
-        RoundedRectangle(cornerRadius: buttonSize * (cornerFactor - strokeFactor * 0.5))
-            .stroke(style: .init(lineWidth: isExpanded ? 1 : buttonSize * strokeFactor))
-            .frame(width: isExpanded ? nil : buttonSize,
-                   height: isExpanded ? nil : buttonSize)
+        ZStack {
+            RoundedRectangle(cornerRadius: buttonSize * cornerFactor - strokeWidth)
+                .inset(by: -0.5 * strokeWidth)
+            .fill(bgColor)
+            RoundedRectangle(cornerRadius: buttonSize * cornerFactor - strokeWidth)
+                .stroke(strokeColor, style: strokeStyle)
+        }
+        .frame(width: isExpanded ? nil : buttonSize,
+               height: isExpanded ? nil : buttonSize)
     }
     
     var innerElements: some View {
         Path { path in
-            let cornerRadius = buttonSize * (cornerFactor - strokeFactor * 0.5)
+            let cornerRadius = buttonSize * cornerFactor - 0.5 * strokeWidth
             let cornerSize = CGSize(width: cornerRadius, height: cornerRadius)
             path.addRoundedRect(in: CGRect(
                 x: buttonSize * toggleOffset,
@@ -52,7 +59,16 @@ private extension BaseView {
                 y: buttonSize * (1 - toggleOffset - toggleHeight),
                 width: buttonSize * toggleHeight,
                 height: buttonSize * toggleHeight), cornerSize: cornerSize)
-        }.stroke(lineWidth: buttonSize * strokeFactor)
+        }
+        .stroke(strokeColor, style: strokeStyle)
+    }
+    
+    var strokeStyle: StrokeStyle {
+        StrokeStyle(lineWidth: strokeWidth)
+    }
+    
+    var strokeWidth: CGFloat {
+        isExpanded ? 1 : buttonSize * strokeFactor
     }
 }
 

@@ -9,20 +9,22 @@ struct SettingsView: View {
     
     var body: some View {
         VStack {
-            title
+            title.edgePadding()
             Divider()
             themeToggle.edgePadding()
             Divider()
-            localeSelector.edgePadding()
+            if locales.count > 1 {
+                localeSelector.edgePadding()
+            }
             textSizeSlider.edgePadding()
-        }.background(Color.red)
+        }
     }
 }
 
 private extension SettingsView {
     
     var title: some View {
-        Text("Environment Overrides").settingsStyle().padding(.top, 8)
+        Text("Environment Overrides").font(.subheadline).bold()
     }
     
     var themeToggle: some View {
@@ -145,17 +147,22 @@ struct SettingsView_Previews: PreviewProvider {
     
     static var previews: some View {
         Group {
-            SettingsView(locales: locales,
-                         locale: localeBinding,
-                         colorScheme: boolBinding,
-                         textSize: textSizeBinding)
-                .colorScheme(.light)
-            SettingsView(locales: locales,
-                         locale: localeBinding,
-                         colorScheme: boolBinding,
-                         textSize: textSizeBinding)
-                .colorScheme(.dark)
-                .previewDevice(PreviewDevice(rawValue: "Mac"))
+            ZStack {
+                Color(UIColor.systemBackground)
+                SettingsView(locales: locales,
+                             locale: localeBinding,
+                             colorScheme: boolBinding,
+                             textSize: textSizeBinding)
+            }
+            .colorScheme(.light)
+            ZStack {
+                Color(UIColor.systemBackground)
+                SettingsView(locales: locales,
+                             locale: localeBinding,
+                             colorScheme: boolBinding,
+                             textSize: textSizeBinding)
+            }
+            .colorScheme(.dark)
         }
         .previewLayout(.fixed(width: 200, height: 300))
     }
