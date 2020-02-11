@@ -2,27 +2,74 @@ import SwiftUI
 
 struct SettingsView: View {
     
+    let locales: [Locale]
+    @Binding var locale: Locale
     @Binding var colorScheme: Bool
     @Binding var textSize: ContentSizeCategory
     
     var body: some View {
         VStack {
-            Text("Environment Overrides").settingsStyle()
+            title
             Divider()
-            Toggle(isOn: $colorScheme) {
-                Text("Light / Dark theme").settingsStyle()
-            }.edgePadding()
-            HStack {
-                Text("Text").settingsStyle()
-                Spacer(minLength: 0)
-                Slider(value: textSizeBinding, in: 0 ... 1,
-                       step: ContentSizeCategory.stride)
-                    .frame(maxWidth: 150, alignment: .trailing)
-                    .background(Text(textSize.name)
-                        .font(.footnote).fontWeight(.light)
-                        .offset(x: 0, y: 20))
-            }.padding(.bottom, 14).edgePadding()
+            themeToggle.edgePadding()
+            Divider()
+            localeSelector.edgePadding()
+            textSizeSlider.edgePadding()
         }.background(Color.red)
+    }
+}
+
+private extension SettingsView {
+    
+    var title: some View {
+        Text("Environment Overrides").settingsStyle().padding(.top, 8)
+    }
+    
+    var themeToggle: some View {
+        Toggle(isOn: $colorScheme) {
+            Text("Light / Dark theme").settingsStyle()
+        }
+    }
+    
+    var localeSelector: some View {
+        HStack {
+            Text("Locale").settingsStyle()
+            Spacer(minLength: 0)
+            Picker("", selection: $locale) {
+                ForEach(locales, id: \.self) { locale in
+                    Text(locale.identifier)
+                }
+            }.pickerStyle(SegmentedPickerStyle())
+            .frame(maxWidth: 100, alignment: .trailing)
+        }
+    }
+    
+    var textSizeSlider: some View {
+        SliderSettingView(
+            title: "Text", value: textSizeBinding,
+            stride: ContentSizeCategory.stride) {
+                self.textSize.name
+            }
+    }
+}
+
+private struct SliderSettingView: View {
+    
+    let title: LocalizedStringKey
+    let value: Binding<CGFloat>
+    let stride: CGFloat
+    let valueTitle: () -> String
+    
+    var body: some View {
+        HStack {
+            Text(title).settingsStyle()
+            Spacer(minLength: 8)
+            Slider(value: value, in: 0 ... 1, step: stride)
+                .frame(maxWidth: 150, alignment: .trailing)
+                .background(Text(valueTitle())
+                    .font(.footnote).fontWeight(.light)
+                    .offset(x: 0, y: 20))
+        }.padding(.bottom, 14)
     }
 }
 
@@ -87,15 +134,28 @@ struct SettingsView_Previews: PreviewProvider {
     
     static var boolBinding = Binding(wrappedValue: true)
     static var textSizeBinding = Binding(wrappedValue: ContentSizeCategory.extraExtraLarge)
+    static var localeBinding = Binding(wrappedValue: locales[0])
+    static var locales: [Locale] {
+        [
+            Locale(identifier: "en"),
+            Locale(identifier: "ru"),
+            Locale(identifier: "fr")
+        ]
+    }
     
     static var previews: some View {
         Group {
-            SettingsView(colorScheme: boolBinding,
+            SettingsView(locales: locales,
+                         locale: localeBinding,
+                         colorScheme: boolBinding,
                          textSize: textSizeBinding)
                 .colorScheme(.light)
-            SettingsView(colorScheme: boolBinding,
+            SettingsView(locales: locales,
+                         locale: localeBinding,
+                         colorScheme: boolBinding,
                          textSize: textSizeBinding)
                 .colorScheme(.dark)
+                .previewDevice(PreviewDevice(rawValue: "Mac"))
         }
         .previewLayout(.fixed(width: 200, height: 300))
     }
