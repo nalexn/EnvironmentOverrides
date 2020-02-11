@@ -127,7 +127,7 @@ struct SettingsView_Previews: PreviewProvider {
     static var previews: some View {
         Group {
             ZStack {
-                Color(UIColor.systemBackground)
+                Color(UIColor.tertiarySystemBackground)
                 SettingsView(locales: locales,
                              locale: localeBinding,
                              colorScheme: boolBinding,
@@ -135,7 +135,7 @@ struct SettingsView_Previews: PreviewProvider {
             }
             .colorScheme(.light)
             ZStack {
-                Color(UIColor.systemBackground)
+                Color(UIColor.tertiarySystemBackground)
                 SettingsView(locales: locales,
                              locale: localeBinding,
                              colorScheme: boolBinding,

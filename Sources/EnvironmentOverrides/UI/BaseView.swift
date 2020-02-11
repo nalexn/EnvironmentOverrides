@@ -77,14 +77,24 @@ private extension BaseView {
 struct BaseView_Previews: PreviewProvider {
     static var previews: some View {
         Group {
-            BaseView(isExpanded: false).colorScheme(.light)
-            BaseView(isExpanded: true).colorScheme(.light)
-            BaseView(isExpanded: false).colorScheme(.dark)
-            BaseView(isExpanded: true).colorScheme(.dark)
+            ZStack {
+                Color(UIColor.systemBackground)
+                HStack {
+                    BaseView(isExpanded: false)
+                    Spacer(minLength: 20)
+                    BaseView(isExpanded: true)
+                }.padding()
+            }.colorScheme(.light)
+            ZStack {
+                Color(UIColor.systemBackground)
+                HStack {
+                    BaseView(isExpanded: false)
+                    Spacer(minLength: 20)
+                    BaseView(isExpanded: true)
+                }.padding()
+            }.colorScheme(.dark)
         }
-        .padding()
-        .background(Color.secondary)
-        .previewLayout(.fixed(width: 120, height: 120))
+        .previewLayout(.fixed(width: 260, height: 200))
     }
 }
 
