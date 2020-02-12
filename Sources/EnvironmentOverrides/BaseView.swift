@@ -3,9 +3,14 @@ import SwiftUI
 struct BaseView: View {
     
     let isExpanded: Bool
+    @Binding var height: CGFloat
     
     var body: some View {
-        box.overlay(Group {
+        box
+            .frame(maxWidth: isExpanded ? 300 : nil,
+                   maxHeight: isExpanded ? height : nil,
+                   alignment: .bottomTrailing)
+            .overlay(Group {
             if !isExpanded {
                 innerElements
             }
@@ -75,22 +80,25 @@ private extension BaseView {
 #if DEBUG
 
 struct BaseView_Previews: PreviewProvider {
+    
+    static let height = Binding<CGFloat>(wrappedValue: 140)
+    
     static var previews: some View {
         Group {
             ZStack {
                 Color(UIColor.systemBackground)
                 HStack {
-                    BaseView(isExpanded: false)
+                    BaseView(isExpanded: false, height: height)
                     Spacer(minLength: 20)
-                    BaseView(isExpanded: true)
+                    BaseView(isExpanded: true, height: height)
                 }.padding()
             }.colorScheme(.light)
             ZStack {
                 Color(UIColor.systemBackground)
                 HStack {
-                    BaseView(isExpanded: false)
+                    BaseView(isExpanded: false, height: height)
                     Spacer(minLength: 20)
-                    BaseView(isExpanded: true)
+                    BaseView(isExpanded: true, height: height)
                 }.padding()
             }.colorScheme(.dark)
         }

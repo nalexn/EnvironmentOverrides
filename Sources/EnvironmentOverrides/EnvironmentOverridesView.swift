@@ -43,6 +43,7 @@ extension EnvironmentValues {
 struct EnvironmentOverridesView: View {
     
     @State private var isExpanded = true
+    @State private var viewHeight: CGFloat = SettingsView.ContentHeight.defaultValue
     private let params: SettingsView.Params
     
     init(params: SettingsView.Params) {
@@ -50,9 +51,12 @@ struct EnvironmentOverridesView: View {
     }
     
     var body: some View {
-        BaseView(isExpanded: isExpanded)
-            .onTapGesture { self.isExpanded.toggle() }
+        BaseView(isExpanded: isExpanded, height: $viewHeight)
             .overlay(SettingsView(params: params))
+            .onPreferenceChange(SettingsView.ContentHeight.self) {
+                self.viewHeight = $0
+            }
+            .onTapGesture { self.isExpanded.toggle() }
             .padding(8)
     }
 }

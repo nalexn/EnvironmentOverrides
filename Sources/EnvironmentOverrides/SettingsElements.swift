@@ -57,7 +57,7 @@ extension SettingsView {
     }
 }
 
-extension View {
+private extension View {
     func widthMeasurer() -> some View {
         background(GeometryReader(content: { proxy in
             Color.clear.preference(key: SettingsView.ControlWidth.self,

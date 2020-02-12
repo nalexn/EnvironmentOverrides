@@ -20,7 +20,7 @@ struct SettingsView: View {
     
     var body: some View {
         VStack {
-            title.edgePadding()
+            title.padding(.top, 10).edgePadding()
             Divider()
             themeToggle.edgePadding()
             Divider()
@@ -29,6 +29,7 @@ struct SettingsView: View {
             }
             textSizeSlider.edgePadding()
         }
+        .heightMeasurer()
         .onPreferenceChange(ControlWidth.self) {
             self.controlWidth = $0
         }
@@ -95,6 +96,27 @@ extension Text {
 private extension View {
     func edgePadding() -> some View {
         padding([.leading, .trailing], 8)
+    }
+}
+
+// MARK: - Sizing
+
+extension SettingsView {
+    struct ContentHeight: PreferenceKey {
+        static var defaultValue = CGFloat.greatestFiniteMagnitude
+        static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
+            value = min(value, nextValue())
+        }
+    }
+}
+
+private extension View {
+    func heightMeasurer() -> some View {
+        background(GeometryReader(content: { proxy in
+            Color.clear.preference(key: SettingsView.ContentHeight.self,
+                                   value: proxy.size.height)
+                .hidden()
+        }))
     }
 }
 
