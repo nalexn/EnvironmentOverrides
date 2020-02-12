@@ -53,6 +53,7 @@ struct EnvironmentOverridesView: View {
     
     var body: some View {
         BaseView(isExpanded: isExpanded, height: $viewHeight)
+            .contentShape(TappableArea(isExpanded: isExpanded))
             .onTapGesture {
                 self.isExpanded.toggle()
             }
@@ -65,6 +66,26 @@ struct EnvironmentOverridesView: View {
                 self.viewHeight = $0
             }
             .padding(8)
+    }
+}
+
+struct TappableArea: Shape {
+    
+    let isExpanded: Bool
+    
+    func path(in rect: CGRect) -> Path {
+        // For .contentShape() "eoFill: true" has no effect (bug in SwiftUI)
+        // So have to define tappable areas manually:
+        if isExpanded {
+            var path = Path()
+            path.addRect(CGRect(x: 0, y: 0, width: rect.width, height: 40))
+            path.addRect(CGRect(x: 0, y: 0, width: rect.width - 60, height: 86))
+            path.addRect(CGRect(x: 0, y: 0, width: 50, height: rect.height))
+            return path
+        } else {
+            return Path(rect)
+        }
+        
     }
 }
 
