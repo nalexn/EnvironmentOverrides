@@ -8,14 +8,12 @@ public extension View {
 
 struct EnvironmentOverridesModifier: ViewModifier {
     
-    private let defaultValues = EnvironmentValues.Reference()
-    @State var values = EnvironmentValues()
+    @Environment(\.colorScheme) private var defaultColorScheme: ColorScheme
+    @Environment(\.sizeCategory) private var defaultSizeCategory: ContentSizeCategory
+    @State private var values = EnvironmentValues()
     
     func body(content: Content) -> some View {
         content
-            .readEnvironment(\.colorScheme, defaultValues)
-            .readEnvironment(\.locale, defaultValues)
-            .readEnvironment(\.sizeCategory, defaultValues)
             .onAppear { self.copyDefaultSettings() }
             .overlay(EnvironmentOverridesView(params: settings),
                      alignment: .bottomTrailing)
@@ -25,7 +23,8 @@ struct EnvironmentOverridesModifier: ViewModifier {
     }
     
     private func copyDefaultSettings() {
-        values = defaultValues.values
+        values.colorScheme = defaultColorScheme
+        values.sizeCategory = defaultSizeCategory
         if let locale = EnvironmentValues.currentLocale {
             values.locale = locale
         }
@@ -37,21 +36,6 @@ struct EnvironmentOverridesModifier: ViewModifier {
             locale: $values.map(\.locale),
             colorScheme: $values.map(\.colorScheme),
             textSize: $values.map(\.sizeCategory))
-    }
-}
-
-private extension View {
-    func readEnvironment<V>(_ keyPath: WritableKeyPath<EnvironmentValues, V>,
-                            _ store: EnvironmentValues.Reference) -> some View {
-        transformEnvironment(keyPath) {
-            store.values[keyPath: keyPath] = $0
-        }
-    }
-}
-
-extension EnvironmentValues {
-    class Reference {
-        var values = EnvironmentValues()
     }
 }
 
