@@ -17,9 +17,19 @@ struct EnvironmentOverridesModifier: ViewModifier {
             .readEnvironment(\.locale, defaultValues)
             .readEnvironment(\.sizeCategory, defaultValues)
             .onAppear { self.values = self.defaultValues.values }
+            .overlay(EnvironmentOverridesView(params: settings),
+                     alignment: .bottomTrailing)
             .environment(\.colorScheme, values.colorScheme)
             .environment(\.locale, values.locale)
             .environment(\.sizeCategory, values.sizeCategory)
+    }
+    
+    private var settings: SettingsView.Params {
+        return SettingsView.Params(
+            locales: EnvironmentValues.supportedLocales,
+            locale: $values.map(\.locale),
+            colorScheme: $values.map(\.colorScheme),
+            textSize: $values.map(\.sizeCategory))
     }
 }
 

@@ -43,7 +43,10 @@ private extension SettingsView {
     }
     
     var themeToggle: some View {
-        Toggle(isOn: colorSchemeBinding) {
+        Toggle(isOn: params.colorScheme
+            .map(toValue: { $0 == .dark},
+                 fromValue: { $0 ? .dark : .light })
+        ) {
             Text("Light / Dark theme").settingsStyle()
         }
     }
@@ -56,32 +59,16 @@ private extension SettingsView {
     
     var textSizeSlider: some View {
         SettingsView.Slider(
-            title: "Text", sliderWidth: controlWidth, value: textSizeBinding,
+            title: "Text", sliderWidth: controlWidth,
+            value: params.textSize.map(
+                toValue: { $0.floatValue },
+                fromValue: {
+                    let index = Int(round($0 / ContentSizeCategory.stride))
+                    return ContentSizeCategory.allCases[index]
+                }),
             stride: ContentSizeCategory.stride) {
                 self.params.textSize.wrappedValue.name
             }
-    }
-}
-
-// MARK: - Bindings
-
-private extension SettingsView {
-    
-    var colorSchemeBinding: Binding<Bool> {
-        .init(get: {
-            self.params.colorScheme.wrappedValue == .dark
-        }, set: {
-            self.params.colorScheme.wrappedValue = $0 ? .dark : .light
-        })
-    }
-    
-    var textSizeBinding: Binding<CGFloat> {
-        .init(get: {
-            self.params.textSize.wrappedValue.floatValue
-        }, set: {
-            let index = Int(round($0 / ContentSizeCategory.stride))
-            self.params.textSize.wrappedValue = ContentSizeCategory.allCases[index]
-        })
     }
 }
 
@@ -117,35 +104,6 @@ private extension View {
                                    value: proxy.size.height)
                 .hidden()
         }))
-    }
-}
-
-// MARK: - Helpers
-
-extension ContentSizeCategory {
-    static var stride: CGFloat {
-        return 1 / CGFloat(allCases.count)
-    }
-    var floatValue: CGFloat {
-        let index = CGFloat(ContentSizeCategory.allCases.firstIndex(of: self) ?? 0)
-        return index * ContentSizeCategory.stride
-    }
-    var name: String {
-        switch self {
-        case .extraSmall: return "XS"
-        case .small: return "S"
-        case .medium: return "M"
-        case .large: return "L"
-        case .extraLarge: return "XL"
-        case .extraExtraLarge: return "XXL"
-        case .extraExtraExtraLarge: return "XXXL"
-        case .accessibilityMedium: return "Accessibility M"
-        case .accessibilityLarge: return "Accessibility L"
-        case .accessibilityExtraLarge: return "Accessibility XL"
-        case .accessibilityExtraExtraLarge: return "Accessibility XXL"
-        case .accessibilityExtraExtraExtraLarge: return "Accessibility XXXL"
-        @unknown default: return "Unknown"
-        }
     }
 }
 
