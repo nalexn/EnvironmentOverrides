@@ -18,8 +18,5 @@ let package = Package(
         .target(
             name: "EnvironmentOverrides",
             dependencies: []),
-        .testTarget(
-            name: "EnvironmentOverridesTests",
-            dependencies: ["EnvironmentOverrides"]),
     ]
 )

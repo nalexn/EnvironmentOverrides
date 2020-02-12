@@ -29,6 +29,7 @@ struct SettingsView: View {
             }
             textSizeSlider.edgePadding()
         }
+        .environment(\.sizeCategory, .medium)
         .heightMeasurer()
         .onPreferenceChange(ControlWidth.self) {
             self.controlWidth = $0
@@ -62,10 +63,7 @@ private extension SettingsView {
             title: "Text", sliderWidth: controlWidth,
             value: params.textSize.map(
                 toValue: { $0.floatValue },
-                fromValue: {
-                    let index = Int(round($0 / ContentSizeCategory.stride))
-                    return ContentSizeCategory.allCases[index]
-                }),
+                fromValue: { ContentSizeCategory(floatValue: $0) }),
             stride: ContentSizeCategory.stride) {
                 self.params.textSize.wrappedValue.name
             }

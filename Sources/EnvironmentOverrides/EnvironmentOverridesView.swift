@@ -16,12 +16,19 @@ struct EnvironmentOverridesModifier: ViewModifier {
             .readEnvironment(\.colorScheme, defaultValues)
             .readEnvironment(\.locale, defaultValues)
             .readEnvironment(\.sizeCategory, defaultValues)
-            .onAppear { self.values = self.defaultValues.values }
+            .onAppear { self.copyDefaultSettings() }
             .overlay(EnvironmentOverridesView(params: settings),
                      alignment: .bottomTrailing)
             .environment(\.colorScheme, values.colorScheme)
             .environment(\.locale, values.locale)
             .environment(\.sizeCategory, values.sizeCategory)
+    }
+    
+    private func copyDefaultSettings() {
+        values = defaultValues.values
+        if let locale = EnvironmentValues.currentLocale {
+            values.locale = locale
+        }
     }
     
     private var settings: SettingsView.Params {
@@ -52,7 +59,7 @@ extension EnvironmentValues {
 
 struct EnvironmentOverridesView: View {
     
-    @State private var isExpanded = true
+    @State private var isExpanded = false
     @State private var viewHeight: CGFloat = SettingsView.ContentHeight.defaultValue
     private let params: SettingsView.Params
     
@@ -62,11 +69,17 @@ struct EnvironmentOverridesView: View {
     
     var body: some View {
         BaseView(isExpanded: isExpanded, height: $viewHeight)
-            .overlay(SettingsView(params: params))
+            .onTapGesture {
+                self.isExpanded.toggle()
+            }
+            .overlay(Group {
+                if isExpanded {
+                    SettingsView(params: params)
+                }
+            })
             .onPreferenceChange(SettingsView.ContentHeight.self) {
                 self.viewHeight = $0
             }
-            .onTapGesture { self.isExpanded.toggle() }
             .padding(8)
     }
 }
