@@ -11,10 +11,10 @@ struct BaseView: View {
                    maxHeight: isExpanded ? height : buttonSize,
                    alignment: .bottomTrailing)
             .overlay(Group {
-            if !isExpanded {
-                innerElements
-            }
-        })
+                if !isExpanded {
+                    innerElements
+                }
+            })
     }
 }
 
