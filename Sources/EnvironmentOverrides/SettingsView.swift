@@ -1,12 +1,22 @@
 import SwiftUI
 
+extension SettingsView {
+    struct Params {
+        let locales: [Locale]
+        let locale: Binding<Locale>
+        let colorScheme: Binding<ColorScheme>
+        let textSize: Binding<ContentSizeCategory>
+    }
+}
+
 struct SettingsView: View {
     
-    let locales: [Locale]
-    @Binding var locale: Locale
-    @Binding var colorScheme: Bool
-    @Binding var textSize: ContentSizeCategory
+    private let params: Params
     @State private var controlWidth: CGFloat = ControlWidth.defaultValue
+    
+    init(params: Params) {
+        self.params = params
+    }
     
     var body: some View {
         VStack {
@@ -14,7 +24,7 @@ struct SettingsView: View {
             Divider()
             themeToggle.edgePadding()
             Divider()
-            if locales.count > 1 {
+            if params.locales.count > 1 {
                 localeSelector.edgePadding()
             }
             textSizeSlider.edgePadding()
@@ -32,22 +42,22 @@ private extension SettingsView {
     }
     
     var themeToggle: some View {
-        Toggle(isOn: $colorScheme) {
+        Toggle(isOn: colorSchemeBinding) {
             Text("Light / Dark theme").settingsStyle()
         }
     }
     
     var localeSelector: some View {
         SettingsView.Picker(
-            title: "Locale", pickerWidth: controlWidth, value: $locale,
-            values: locales, valueTitle: { $0.identifier })
+            title: "Locale", pickerWidth: controlWidth, value: params.locale,
+            values: params.locales, valueTitle: { $0.identifier })
     }
     
     var textSizeSlider: some View {
         SettingsView.Slider(
             title: "Text", sliderWidth: controlWidth, value: textSizeBinding,
             stride: ContentSizeCategory.stride) {
-                self.textSize.name
+                self.params.textSize.wrappedValue.name
             }
     }
 }
@@ -56,12 +66,20 @@ private extension SettingsView {
 
 private extension SettingsView {
     
+    var colorSchemeBinding: Binding<Bool> {
+        .init(get: {
+            self.params.colorScheme.wrappedValue == .dark
+        }, set: {
+            self.params.colorScheme.wrappedValue = $0 ? .dark : .light
+        })
+    }
+    
     var textSizeBinding: Binding<CGFloat> {
         .init(get: {
-            self.textSize.floatValue
+            self.params.textSize.wrappedValue.floatValue
         }, set: {
             let index = Int(round($0 / ContentSizeCategory.stride))
-            self.textSize = ContentSizeCategory.allCases[index]
+            self.params.textSize.wrappedValue = ContentSizeCategory.allCases[index]
         })
     }
 }
@@ -111,46 +129,36 @@ extension ContentSizeCategory {
 
 #if DEBUG
 
-struct SettingsView_Previews: PreviewProvider {
-    
-    static var boolBinding = Binding(wrappedValue: true)
-    static var textSizeBinding = Binding(wrappedValue: ContentSizeCategory.extraExtraLarge)
-    static var localeBinding = Binding(wrappedValue: locales[0])
-    static var locales: [Locale] {
-        [
-            Locale(identifier: "en"),
-            Locale(identifier: "ru"),
-            Locale(identifier: "fr")
-        ]
+extension SettingsView.Params {
+    static func preview() -> SettingsView.Params {
+        SettingsView.Params(
+            locales: [
+                Locale(identifier: "en"),
+                Locale(identifier: "ru"),
+                Locale(identifier: "fr")
+            ],
+            locale: Binding<Locale>(wrappedValue: Locale(identifier: "en")),
+            colorScheme: Binding<ColorScheme>(wrappedValue: .dark),
+            textSize: Binding<ContentSizeCategory>(wrappedValue: .medium))
     }
-    
+}
+
+struct SettingsView_Previews: PreviewProvider {
+
     static var previews: some View {
         Group {
             ZStack {
                 Color(UIColor.tertiarySystemBackground)
-                SettingsView(locales: locales,
-                             locale: localeBinding,
-                             colorScheme: boolBinding,
-                             textSize: textSizeBinding)
+                SettingsView(params: .preview())
             }
             .colorScheme(.light)
             ZStack {
                 Color(UIColor.tertiarySystemBackground)
-                SettingsView(locales: locales,
-                             locale: localeBinding,
-                             colorScheme: boolBinding,
-                             textSize: textSizeBinding)
+                SettingsView(params: .preview())
             }
             .colorScheme(.dark)
         }
         .previewLayout(.fixed(width: 200, height: 300))
-    }
-}
-
-extension Binding {
-    init(wrappedValue: Value) {
-        var value = wrappedValue
-        self.init(get: { value }, set: { value = $0 })
     }
 }
 
