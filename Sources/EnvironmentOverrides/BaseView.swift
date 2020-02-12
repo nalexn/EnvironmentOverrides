@@ -7,8 +7,8 @@ struct BaseView: View {
     
     var body: some View {
         box
-            .frame(maxWidth: isExpanded ? 300 : nil,
-                   maxHeight: isExpanded ? height : nil,
+            .frame(maxWidth: isExpanded ? expandedWidth : buttonSize,
+                   maxHeight: isExpanded ? height : buttonSize,
                    alignment: .bottomTrailing)
             .overlay(Group {
             if !isExpanded {
@@ -20,6 +20,7 @@ struct BaseView: View {
 
 private extension BaseView {
     
+    var expandedWidth: CGFloat { 300 }
     var buttonSize: CGFloat { 44 }
     var cornerFactor: CGFloat { 0.17 }
     var toggleOffset: CGFloat { 0.19 }
