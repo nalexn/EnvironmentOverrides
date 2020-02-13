@@ -54,6 +54,7 @@ struct EnvironmentOverridesModifier: ViewModifier {
 struct EnvironmentOverridesView: View {
     
     @State private var isExpanded = false
+    @State private var isHidden = false
     private let params: SettingsView.Params
     
     init(params: SettingsView.Params) {
@@ -68,9 +69,10 @@ struct EnvironmentOverridesView: View {
                     self.isExpanded.toggle()
                 }
             }
-            .overlay(SettingsView(params: params)
+            .overlay(SettingsView(params: params, isHidden: $isHidden)
                 .instantFade(display: isExpanded, duration: duration))
             .padding(8)
+            .opacity(isHidden ? 0 : 1)
     }
     
     private var duration: TimeInterval { 0.2 }
@@ -93,9 +95,11 @@ struct TappableArea: Shape {
         // So have to define tappable areas manually:
         if isExpanded {
             var path = Path()
+            let widthForToggle = rect.width - 60
             path.addRect(CGRect(x: 0, y: 0, width: rect.width, height: 40))
-            path.addRect(CGRect(x: 0, y: 0, width: rect.width - 60, height: 86))
+            path.addRect(CGRect(x: 0, y: 0, width: widthForToggle, height: 80))
             path.addRect(CGRect(x: 0, y: 0, width: 50, height: rect.height))
+            path.addRect(CGRect(x: 0, y: rect.height - 110, width: widthForToggle, height: 70))
             return path
         } else {
             return Path(rect)

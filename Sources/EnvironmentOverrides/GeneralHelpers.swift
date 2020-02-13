@@ -80,3 +80,26 @@ private extension Array where Element == Locale {
         first(where: { $0.identifier.hasPrefix(identifier) })
     }
 }
+
+// MARK: - ScreenshotGenerator
+
+struct ScreenshotGenerator { }
+
+extension ScreenshotGenerator {
+    
+    @discardableResult
+    static func takeScreenshot() -> Bool {
+        let view = UIScreen.main.snapshotView(afterScreenUpdates: true)
+        let scale = UIScreen.main.scale
+        UIGraphicsBeginImageContextWithOptions(view.bounds.size, false, scale)
+        defer {
+            UIGraphicsEndImageContext()
+        }
+        guard view.drawHierarchy(in: view.bounds, afterScreenUpdates: true)
+            else { return false }
+        if let image = UIGraphicsGetImageFromCurrentImageContext() {
+            UIImageWriteToSavedPhotosAlbum(image, nil, nil, nil)
+        }
+        return true
+    }
+}

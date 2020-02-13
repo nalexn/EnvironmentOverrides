@@ -14,15 +14,17 @@ extension SettingsView {
 struct SettingsView: View {
     
     private let params: Params
+    @Binding private var isHidden: Bool
     @State private var controlWidth: CGFloat = ControlWidth.defaultValue
     
-    init(params: Params) {
+    init(params: Params, isHidden: Binding<Bool>) {
         self.params = params
+        _isHidden = isHidden
     }
     
     var body: some View {
         VStack {
-            title.padding(.top, 10).edgePadding()
+            title.edgePadding()
             Divider()
             Group {
                 themeToggle
@@ -30,8 +32,9 @@ struct SettingsView: View {
                 textSizeSlider
                 layoutDirectionToggle
                 accessibilityToggle
+                screenshotButton
             }.edgePadding()
-        }
+        }.padding([.top, .bottom], 10)
         .onPreferenceChange(ControlWidth.self) {
             self.controlWidth = $0
         }
@@ -81,6 +84,16 @@ private extension SettingsView {
         SettingsView.Toggle(title: "Accessibility",
                             value: params.accessibilityEnabled)
     }
+    
+    var screenshotButton: some View {
+        Button(action: {
+            self.isHidden = true
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                ScreenshotGenerator.takeScreenshot()
+                self.isHidden = false
+            }
+        }, label: { Text("Take Screenshot") })
+    }
 }
 
 // MARK: - Styling
@@ -121,12 +134,12 @@ struct SettingsView_Previews: PreviewProvider {
         Group {
             ZStack {
                 Color(UIColor.tertiarySystemBackground)
-                SettingsView(params: .preview())
+                SettingsView(params: .preview(), isHidden: Binding<Bool>(wrappedValue: false))
             }
             .colorScheme(.light)
             ZStack {
                 Color(UIColor.tertiarySystemBackground)
-                SettingsView(params: .preview())
+                SettingsView(params: .preview(), isHidden: Binding<Bool>(wrappedValue: false))
             }
             .colorScheme(.dark)
         }
