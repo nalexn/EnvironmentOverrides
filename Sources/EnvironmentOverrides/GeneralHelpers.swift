@@ -1,5 +1,4 @@
 import SwiftUI
-import Photos
 
 // MARK: - Bindings
 
@@ -82,6 +81,14 @@ extension EnvironmentValues {
         let shortId = String(fullId.prefix(2))
         return supportedLocales.locale(withId: fullId) ??
             supportedLocales.locale(withId: shortId)
+    }
+    
+    static var isMacCatalyst: Bool {
+        #if targetEnvironment(macCatalyst)
+        return true
+        #else
+        return false
+        #endif
     }
 }
 

@@ -32,7 +32,7 @@ struct SettingsView: View {
                 textSizeSlider
                 layoutDirectionToggle
                 accessibilityToggle
-                screenshotButton
+                screenshotButton.disabled(EnvironmentValues.isMacCatalyst)
             }.edgePadding()
         }.padding([.top, .bottom], 10)
         .onPreferenceChange(ControlWidth.self) {
