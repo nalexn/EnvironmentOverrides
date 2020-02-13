@@ -1,4 +1,5 @@
 import SwiftUI
+import Photos
 
 // MARK: - Bindings
 
@@ -98,17 +99,12 @@ extension ScreenshotGenerator {
     
     @discardableResult
     static func takeScreenshot() -> Bool {
-        let view = UIScreen.main.snapshotView(afterScreenUpdates: true)
-        let scale = UIScreen.main.scale
-        UIGraphicsBeginImageContextWithOptions(view.bounds.size, false, scale)
-        defer {
-            UIGraphicsEndImageContext()
+        let view = UIScreen.main.snapshotView(afterScreenUpdates: false)
+        let renderer = UIGraphicsImageRenderer(size: view.bounds.size)
+        let image = renderer.image { _ in
+            view.drawHierarchy(in: view.bounds, afterScreenUpdates: true)
         }
-        guard view.drawHierarchy(in: view.bounds, afterScreenUpdates: true)
-            else { return false }
-        if let image = UIGraphicsGetImageFromCurrentImageContext() {
-            UIImageWriteToSavedPhotosAlbum(image, nil, nil, nil)
-        }
+        UIImageWriteToSavedPhotosAlbum(image, nil, nil, nil)
         return true
     }
 }
