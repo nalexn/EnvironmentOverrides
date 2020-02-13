@@ -32,7 +32,7 @@ struct SettingsView: View {
                 textSizeSlider
                 layoutDirectionToggle
                 accessibilityToggle
-                screenshotButton.disabled(EnvironmentValues.isMacCatalyst)
+                screenshotButton.disabled(EnvironmentValues.isMac)
             }.edgePadding()
         }.padding([.top, .bottom], 10)
         .onPreferenceChange(ControlWidth.self) {
@@ -137,17 +137,25 @@ struct SettingsView_Previews: PreviewProvider {
     static var previews: some View {
         Group {
             ZStack {
-                Color(UIColor.tertiarySystemBackground)
+                bgView
                 SettingsView(params: .preview(), isHidden: Binding<Bool>(wrappedValue: false))
             }
             .colorScheme(.light)
             ZStack {
-                Color(UIColor.tertiarySystemBackground)
+                bgView
                 SettingsView(params: .preview(), isHidden: Binding<Bool>(wrappedValue: false))
             }
             .colorScheme(.dark)
         }
         .previewLayout(.fixed(width: 200, height: 300))
+    }
+    
+    private static var bgView: some View {
+        #if os(macOS)
+        return Color(#colorLiteral(red: 1, green: 1, blue: 1, alpha: 1))
+        #else
+        return Color(UIColor.tertiarySystemBackground)
+        #endif
     }
 }
 

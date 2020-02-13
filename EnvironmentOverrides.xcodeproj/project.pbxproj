@@ -6,19 +6,6 @@
 	objectVersion = 46;
 	objects = {
 
-/* Begin PBXAggregateTarget section */
-		"EnvironmentOverrides::EnvironmentOverridesPackageTests::ProductTarget" /* EnvironmentOverridesPackageTests */ = {
-			isa = PBXAggregateTarget;
-			buildConfigurationList = OBJ_31 /* Build configuration list for PBXAggregateTarget "EnvironmentOverridesPackageTests" */;
-			buildPhases = (
-			);
-			dependencies = (
-			);
-			name = EnvironmentOverridesPackageTests;
-			productName = EnvironmentOverridesPackageTests;
-		};
-/* End PBXAggregateTarget section */
-
 /* Begin PBXBuildFile section */
 		F62E8E4423F2BED8003E63BE /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F62E8E4323F2BED8003E63BE /* SettingsView.swift */; };
 		F62E8E8323F30A35003E63BE /* SettingsElements.swift in Sources */ = {isa = PBXBuildFile; fileRef = F62E8E8223F30A34003E63BE /* SettingsElements.swift */; };
@@ -146,7 +133,6 @@
 			targets = (
 				"EnvironmentOverrides::EnvironmentOverrides" /* EnvironmentOverrides */,
 				"EnvironmentOverrides::SwiftPMPackageDescription" /* EnvironmentOverridesPackageDescription */,
-				"EnvironmentOverrides::EnvironmentOverridesPackageTests::ProductTarget" /* EnvironmentOverridesPackageTests */,
 			);
 		};
 /* End PBXProject section */
@@ -206,9 +192,7 @@
 				);
 				HEADER_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = EnvironmentOverrides.xcodeproj/EnvironmentOverrides_Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) $(TOOLCHAIN_DIR)/usr/lib/swift/macosx";
-				MACOSX_DEPLOYMENT_TARGET = 10.15;
 				OTHER_CFLAGS = "$(inherited)";
 				OTHER_LDFLAGS = "$(inherited)";
 				OTHER_SWIFT_FLAGS = "$(inherited)";
@@ -222,7 +206,6 @@
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TARGET_NAME = EnvironmentOverrides;
 				TVOS_DEPLOYMENT_TARGET = 13.0;
-				WATCHOS_DEPLOYMENT_TARGET = 6.0;
 			};
 			name = Debug;
 		};
@@ -236,9 +219,7 @@
 				);
 				HEADER_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = EnvironmentOverrides.xcodeproj/EnvironmentOverrides_Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) $(TOOLCHAIN_DIR)/usr/lib/swift/macosx";
-				MACOSX_DEPLOYMENT_TARGET = 10.15;
 				OTHER_CFLAGS = "$(inherited)";
 				OTHER_LDFLAGS = "$(inherited)";
 				OTHER_SWIFT_FLAGS = "$(inherited)";
@@ -252,7 +233,6 @@
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TARGET_NAME = EnvironmentOverrides;
 				TVOS_DEPLOYMENT_TARGET = 13.0;
-				WATCHOS_DEPLOYMENT_TARGET = 6.0;
 			};
 			name = Release;
 		};
@@ -298,21 +278,11 @@
 				SUPPORTED_PLATFORMS = "macosx iphoneos iphonesimulator appletvos appletvsimulator watchos watchsimulator";
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) SWIFT_PACKAGE DEBUG";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				TVOS_DEPLOYMENT_TARGET = 13.0;
 				USE_HEADERMAP = NO;
+				WATCHOS_DEPLOYMENT_TARGET = 6.0;
 			};
 			name = Debug;
-		};
-		OBJ_32 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-			};
-			name = Debug;
-		};
-		OBJ_33 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-			};
-			name = Release;
 		};
 		OBJ_4 /* Release */ = {
 			isa = XCBuildConfiguration;
@@ -335,7 +305,9 @@
 				SUPPORTED_PLATFORMS = "macosx iphoneos iphonesimulator appletvos appletvsimulator watchos watchsimulator";
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) SWIFT_PACKAGE";
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				TVOS_DEPLOYMENT_TARGET = 13.0;
 				USE_HEADERMAP = NO;
+				WATCHOS_DEPLOYMENT_TARGET = 6.0;
 			};
 			name = Release;
 		};
@@ -365,15 +337,6 @@
 			buildConfigurations = (
 				OBJ_26 /* Debug */,
 				OBJ_27 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		OBJ_31 /* Build configuration list for PBXAggregateTarget "EnvironmentOverridesPackageTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				OBJ_32 /* Debug */,
-				OBJ_33 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

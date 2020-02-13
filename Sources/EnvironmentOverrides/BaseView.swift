@@ -21,8 +21,13 @@ private extension BaseView {
     var toggleOffset: CGFloat { 0.19 }
     var toggleHeight: CGFloat { 0.24 }
     var strokeFactor: CGFloat { 0.09 }
+    #if os(macOS)
+    var strokeColor: Color { Color(#colorLiteral(red: 0.2549019754, green: 0.2745098174, blue: 0.3019607961, alpha: 1)) }
+    var bgColor: Color { Color(#colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1)) }
+    #else
     var strokeColor: Color { Color(UIColor.separator) }
     var bgColor: Color { Color(UIColor.tertiarySystemBackground) }
+    #endif
     
     var box: some View {
         ZStack {
@@ -83,7 +88,7 @@ struct BaseView_Previews: PreviewProvider {
     static var previews: some View {
         Group {
             ZStack {
-                Color(UIColor.systemBackground)
+                bgView
                 HStack {
                     BaseView(isExpanded: false)
                     Spacer(minLength: 20)
@@ -91,7 +96,7 @@ struct BaseView_Previews: PreviewProvider {
                 }.padding()
             }.colorScheme(.light)
             ZStack {
-                Color(UIColor.systemBackground)
+                bgView
                 HStack {
                     BaseView(isExpanded: false)
                     Spacer(minLength: 20)
@@ -100,6 +105,14 @@ struct BaseView_Previews: PreviewProvider {
             }.colorScheme(.dark)
         }
         .previewLayout(.fixed(width: 260, height: 200))
+    }
+    
+    private static var bgView: some View {
+        #if os(macOS)
+        return Color(#colorLiteral(red: 1, green: 1, blue: 1, alpha: 1))
+        #else
+        return Color(UIColor.systemBackground)
+        #endif
     }
 }
 

@@ -112,10 +112,18 @@ struct TappableArea: Shape {
 
 struct EnvironmentOverridesView_Previews: PreviewProvider {
     static var previews: some View {
-        Color(UIColor.systemBackground)
+        bgView
             .overlay(EnvironmentOverridesView(params: .preview()),
                      alignment: .bottomTrailing)
             .colorScheme(.light)
+    }
+    
+    private static var bgView: some View {
+        #if os(macOS)
+        return Color(#colorLiteral(red: 1, green: 1, blue: 1, alpha: 1))
+        #else
+        return Color(UIColor.systemBackground)
+        #endif
     }
 }
 

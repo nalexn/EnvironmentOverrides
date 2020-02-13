@@ -83,8 +83,8 @@ extension EnvironmentValues {
             supportedLocales.locale(withId: shortId)
     }
     
-    static var isMacCatalyst: Bool {
-        #if targetEnvironment(macCatalyst)
+    static var isMac: Bool {
+        #if targetEnvironment(macCatalyst) || os(macOS)
         return true
         #else
         return false
@@ -106,12 +106,14 @@ extension ScreenshotGenerator {
     
     @discardableResult
     static func takeScreenshot() -> Bool {
+        #if !os(macOS)
         let view = UIScreen.main.snapshotView(afterScreenUpdates: false)
         let renderer = UIGraphicsImageRenderer(size: view.bounds.size)
         let image = renderer.image { _ in
             view.drawHierarchy(in: view.bounds, afterScreenUpdates: true)
         }
         UIImageWriteToSavedPhotosAlbum(image, nil, nil, nil)
+        #endif
         return true
     }
 }
@@ -121,14 +123,20 @@ extension ScreenshotGenerator {
 struct Haptic {
     
     static func successFeedback() {
+        #if !os(macOS)
         UINotificationFeedbackGenerator().notificationOccurred(.success)
+        #endif
     }
     
     static func errorFeedback() {
+        #if !os(macOS)
         UINotificationFeedbackGenerator().notificationOccurred(.error)
+        #endif
     }
     
     static func toggleFeedback() {
+        #if !os(macOS)
         UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+        #endif
     }
 }
