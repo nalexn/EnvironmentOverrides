@@ -15,7 +15,7 @@ struct BaseView: View {
 
 private extension BaseView {
     
-    var expandedSize: CGSize { CGSize(width: 300, height: 200) }
+    var expandedSize: CGSize { CGSize(width: 300, height: 290) }
     var buttonSize: CGFloat { 44 }
     var cornerFactor: CGFloat { 0.17 }
     var toggleOffset: CGFloat { 0.19 }

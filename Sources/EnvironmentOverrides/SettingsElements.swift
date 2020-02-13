@@ -2,6 +2,18 @@ import SwiftUI
 
 extension SettingsView {
     
+    struct Toggle: View {
+        
+        let title: LocalizedStringKey
+        let value: Binding<Bool>
+        
+        var body: some View {
+            SwiftUI.Toggle(isOn: value) {
+                Text(title).settingsStyle()
+            }
+        }
+    }
+    
     struct Picker<T>: View where T: Hashable {
         
         let title: LocalizedStringKey
@@ -43,7 +55,7 @@ extension SettingsView {
                     .background(Text(valueTitle())
                         .font(.footnote).fontWeight(.light)
                         .offset(x: 0, y: 20))
-            }.padding(.bottom, 14)
+            }
         }
     }
 }

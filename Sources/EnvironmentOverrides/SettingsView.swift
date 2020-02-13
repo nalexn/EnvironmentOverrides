@@ -6,6 +6,8 @@ extension SettingsView {
         let locale: Binding<Locale>
         let colorScheme: Binding<ColorScheme>
         let textSize: Binding<ContentSizeCategory>
+        let layoutDirection: Binding<LayoutDirection>
+        let accessibilityEnabled: Binding<Bool>
     }
 }
 
@@ -22,14 +24,14 @@ struct SettingsView: View {
         VStack {
             title.padding(.top, 10).edgePadding()
             Divider()
-            themeToggle.edgePadding()
-            Divider()
-            if params.locales.count > 1 {
-                localeSelector.edgePadding()
-            }
-            textSizeSlider.edgePadding()
+            Group {
+                themeToggle
+                localeSelector.disabled(params.locales.count < 2)
+                textSizeSlider
+                layoutDirectionToggle
+                accessibilityToggle
+            }.edgePadding()
         }
-        .environment(\.sizeCategory, .medium)
         .onPreferenceChange(ControlWidth.self) {
             self.controlWidth = $0
         }
@@ -43,12 +45,11 @@ private extension SettingsView {
     }
     
     var themeToggle: some View {
-        Toggle(isOn: params.colorScheme
+        SettingsView.Toggle(title: "Light or Dark",
+                            value: params.colorScheme
             .map(toValue: { $0 == .dark },
                  fromValue: { $0 ? .dark : .light })
-        ) {
-            Text("Light / Dark theme").settingsStyle()
-        }
+        )
     }
     
     var localeSelector: some View {
@@ -66,6 +67,19 @@ private extension SettingsView {
             stride: ContentSizeCategory.stride) {
                 self.params.textSize.wrappedValue.name
             }
+    }
+    
+    var layoutDirectionToggle: some View {
+        SettingsView.Toggle(title: "Inverse Layout",
+                            value: params.layoutDirection
+            .map(toValue: { $0 == .rightToLeft },
+                 fromValue: { $0 ? .rightToLeft : .leftToRight })
+        )
+    }
+    
+    var accessibilityToggle: some View {
+        SettingsView.Toggle(title: "Accessibility",
+                            value: params.accessibilityEnabled)
     }
 }
 
@@ -95,7 +109,9 @@ extension SettingsView.Params {
             ],
             locale: Binding<Locale>(wrappedValue: Locale(identifier: "en")),
             colorScheme: Binding<ColorScheme>(wrappedValue: .dark),
-            textSize: Binding<ContentSizeCategory>(wrappedValue: .medium))
+            textSize: Binding<ContentSizeCategory>(wrappedValue: .medium),
+            layoutDirection: Binding<LayoutDirection>(wrappedValue: .leftToRight),
+            accessibilityEnabled: Binding<Bool>(wrappedValue: false))
     }
 }
 
