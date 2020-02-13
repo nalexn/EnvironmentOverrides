@@ -89,7 +89,11 @@ private extension SettingsView {
         Button(action: {
             self.isHidden = true
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                ScreenshotGenerator.takeScreenshot()
+                if ScreenshotGenerator.takeScreenshot() {
+                    Haptic.successFeedback()
+                } else {
+                    Haptic.errorFeedback()
+                }
                 self.isHidden = false
             }
         }, label: { Text("Take Screenshot") })

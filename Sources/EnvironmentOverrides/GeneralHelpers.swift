@@ -20,6 +20,15 @@ extension Binding {
             self.wrappedValue = fromValue(value)
         })
     }
+    
+    func onChange(_ perform: @escaping (Value) -> Void) -> Binding<Value> {
+        return .init(get: {
+            self.wrappedValue
+        }, set: { value in
+            self.wrappedValue = value
+            perform(value)
+        })
+    }
 }
 
 // MARK: - EnvironmentValues
@@ -101,5 +110,22 @@ extension ScreenshotGenerator {
             UIImageWriteToSavedPhotosAlbum(image, nil, nil, nil)
         }
         return true
+    }
+}
+
+// MARK: - Haptic
+
+struct Haptic {
+    
+    static func successFeedback() {
+        UINotificationFeedbackGenerator().notificationOccurred(.success)
+    }
+    
+    static func errorFeedback() {
+        UINotificationFeedbackGenerator().notificationOccurred(.error)
+    }
+    
+    static func toggleFeedback() {
+        UIImpactFeedbackGenerator(style: .medium).impactOccurred()
     }
 }

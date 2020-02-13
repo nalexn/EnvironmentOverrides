@@ -26,7 +26,9 @@ extension SettingsView {
             HStack {
                 Text(title).settingsStyle()
                 Spacer(minLength: 8)
-                SwiftUI.Picker("", selection: value) {
+                SwiftUI.Picker("", selection: value.onChange({ _ in
+                    Haptic.toggleFeedback()
+                })) {
                     ForEach(values, id: \.self) { value in
                         Text(self.valueTitle(value))
                     }
