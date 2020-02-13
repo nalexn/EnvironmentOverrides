@@ -3,24 +3,19 @@ import SwiftUI
 struct BaseView: View {
     
     let isExpanded: Bool
-    @Binding var height: CGFloat
     
     var body: some View {
         box
-            .frame(maxWidth: isExpanded ? expandedWidth : buttonSize,
-                   maxHeight: isExpanded ? height : buttonSize,
+            .frame(maxWidth: isExpanded ? expandedSize.width : buttonSize,
+                   maxHeight: isExpanded ? expandedSize.height : buttonSize,
                    alignment: .bottomTrailing)
-            .overlay(Group {
-                if !isExpanded {
-                    innerElements
-                }
-            })
+            .overlay(innerElements.opacity(isExpanded ? 0 : 1), alignment: .bottomTrailing)
     }
 }
 
 private extension BaseView {
     
-    var expandedWidth: CGFloat { 300 }
+    var expandedSize: CGSize { CGSize(width: 300, height: 200) }
     var buttonSize: CGFloat { 44 }
     var cornerFactor: CGFloat { 0.17 }
     var toggleOffset: CGFloat { 0.19 }
@@ -67,6 +62,7 @@ private extension BaseView {
                 height: buttonSize * toggleHeight), cornerSize: cornerSize)
         }
         .stroke(strokeColor, style: strokeStyle)
+        .frame(width: buttonSize, height: buttonSize)
     }
     
     var strokeStyle: StrokeStyle {
@@ -89,17 +85,17 @@ struct BaseView_Previews: PreviewProvider {
             ZStack {
                 Color(UIColor.systemBackground)
                 HStack {
-                    BaseView(isExpanded: false, height: height)
+                    BaseView(isExpanded: false)
                     Spacer(minLength: 20)
-                    BaseView(isExpanded: true, height: height)
+                    BaseView(isExpanded: true)
                 }.padding()
             }.colorScheme(.light)
             ZStack {
                 Color(UIColor.systemBackground)
                 HStack {
-                    BaseView(isExpanded: false, height: height)
+                    BaseView(isExpanded: false)
                     Spacer(minLength: 20)
-                    BaseView(isExpanded: true, height: height)
+                    BaseView(isExpanded: true)
                 }.padding()
             }.colorScheme(.dark)
         }

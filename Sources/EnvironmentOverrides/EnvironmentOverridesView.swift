@@ -44,7 +44,6 @@ struct EnvironmentOverridesModifier: ViewModifier {
 struct EnvironmentOverridesView: View {
     
     @State private var isExpanded = false
-    @State private var viewHeight: CGFloat = SettingsView.ContentHeight.defaultValue
     private let params: SettingsView.Params
     
     init(params: SettingsView.Params) {
@@ -52,20 +51,26 @@ struct EnvironmentOverridesView: View {
     }
     
     var body: some View {
-        BaseView(isExpanded: isExpanded, height: $viewHeight)
+        BaseView(isExpanded: isExpanded)
             .contentShape(TappableArea(isExpanded: isExpanded))
             .onTapGesture {
-                self.isExpanded.toggle()
-            }
-            .overlay(Group {
-                if isExpanded {
-                    SettingsView(params: params)
+                withAnimation(.easeInOut(duration: self.duration)) {
+                    self.isExpanded.toggle()
                 }
-            })
-            .onPreferenceChange(SettingsView.ContentHeight.self) {
-                self.viewHeight = $0
             }
+            .overlay(SettingsView(params: params)
+                .instantFade(display: isExpanded, duration: duration))
             .padding(8)
+    }
+    
+    private var duration: TimeInterval { 0.2 }
+}
+
+private extension View {
+    func instantFade(display: Bool, duration: TimeInterval) -> some View {
+        opacity(display ? 1 : 0).animation(display ?
+            Animation.linear(duration: 0.01).delay(duration - 0.01) :
+            Animation.linear(duration: 0.01))
     }
 }
 

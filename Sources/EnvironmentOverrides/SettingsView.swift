@@ -30,7 +30,6 @@ struct SettingsView: View {
             textSizeSlider.edgePadding()
         }
         .environment(\.sizeCategory, .medium)
-        .heightMeasurer()
         .onPreferenceChange(ControlWidth.self) {
             self.controlWidth = $0
         }
@@ -45,7 +44,7 @@ private extension SettingsView {
     
     var themeToggle: some View {
         Toggle(isOn: params.colorScheme
-            .map(toValue: { $0 == .dark},
+            .map(toValue: { $0 == .dark },
                  fromValue: { $0 ? .dark : .light })
         ) {
             Text("Light / Dark theme").settingsStyle()
@@ -81,27 +80,6 @@ extension Text {
 private extension View {
     func edgePadding() -> some View {
         padding([.leading, .trailing], 8)
-    }
-}
-
-// MARK: - Sizing
-
-extension SettingsView {
-    struct ContentHeight: PreferenceKey {
-        static var defaultValue = CGFloat.greatestFiniteMagnitude
-        static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
-            value = min(value, nextValue())
-        }
-    }
-}
-
-private extension View {
-    func heightMeasurer() -> some View {
-        background(GeometryReader(content: { proxy in
-            Color.clear.preference(key: SettingsView.ContentHeight.self,
-                                   value: proxy.size.height)
-                .hidden()
-        }))
     }
 }
 

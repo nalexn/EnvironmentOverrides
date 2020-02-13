@@ -52,7 +52,10 @@ extension SettingsView {
     struct ControlWidth: PreferenceKey {
         static var defaultValue: CGFloat = 300
         static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
-            value = min(value, nextValue())
+            let next = nextValue()
+            if next > 40 {
+                value = min(value, nextValue())
+            }
         }
     }
 }
