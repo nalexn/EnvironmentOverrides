@@ -41,11 +41,11 @@ struct EnvironmentOverridesModifier: ViewModifier {
     private var settings: SettingsView.Params {
         return SettingsView.Params(
             locales: EnvironmentValues.supportedLocales,
-            locale: $values.map(\.locale),
-            colorScheme: $values.map(\.colorScheme),
-            textSize: $values.map(\.sizeCategory),
-            layoutDirection: $values.map(\.layoutDirection),
-            accessibilityEnabled: $values.map(\.accessibilityEnabled))
+            locale: $values.locale,
+            colorScheme: $values.colorScheme,
+            textSize: $values.sizeCategory,
+            layoutDirection: $values.layoutDirection,
+            accessibilityEnabled: $values.accessibilityEnabled)
     }
 }
 

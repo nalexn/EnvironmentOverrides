@@ -4,14 +4,6 @@ import SwiftUI
 
 extension Binding {
     
-    func map<T>(_ keyPath: WritableKeyPath<Value, T>) -> Binding<T> {
-        return .init(get: {
-            self.wrappedValue[keyPath: keyPath]
-        }, set: {
-            self.wrappedValue[keyPath: keyPath] = $0
-        })
-    }
-    
     func map<T>(toValue: @escaping (Value) -> T,
                 fromValue: @escaping (T) -> Value) -> Binding<T> {
         return .init(get: {
