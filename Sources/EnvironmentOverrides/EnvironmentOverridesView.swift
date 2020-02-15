@@ -1,8 +1,25 @@
 import SwiftUI
 
+public extension EnvironmentValues {
+    struct Diff: OptionSet {
+        public let rawValue: Int
+        
+        public init(rawValue: Int) {
+            self.rawValue = rawValue
+        }
+
+        public static let locale = Diff(rawValue: 1 << 0)
+        public static let colorScheme = Diff(rawValue: 1 << 1)
+        public static let sizeCategory = Diff(rawValue: 1 << 2)
+        public static let layoutDirection = Diff(rawValue: 1 << 3)
+        public static let accessibilityEnabled = Diff(rawValue: 1 << 4)
+    }
+}
+
 public extension View {
-    func attachEnvironmentOverrides() -> some View {
-        modifier(EnvironmentOverridesModifier())
+    func attachEnvironmentOverrides(
+        onChange: ((EnvironmentValues.Diff) -> Void)? = nil) -> some View {
+        modifier(EnvironmentOverridesModifier(onChange: onChange))
     }
 }
 
@@ -13,19 +30,19 @@ struct EnvironmentOverridesModifier: ViewModifier {
     @Environment(\.layoutDirection) private var defaultLayoutDirection: LayoutDirection
     @Environment(\.accessibilityEnabled) private var defaultAccessibilityEnabled: Bool
     @State private var values = EnvironmentValues()
+    let onChange: ((EnvironmentValues.Diff) -> Void)?
     
     func body(content: Content) -> some View {
         content
             .onAppear { self.copyDefaultSettings() }
+            .environment(\.locale, values.locale)
             .environment(\.sizeCategory, values.sizeCategory)
             .environment(\.layoutDirection, values.layoutDirection)
+            .environment(\.accessibilityEnabled, values.accessibilityEnabled)
             .overlay(EnvironmentOverridesView(params: settings),
                      alignment: .bottomTrailing)
-            .environment(\.sizeCategory, .medium)
-            .environment(\.layoutDirection, .leftToRight)
+            .environment(\.sizeCategory, .medium) // fixed for the control view
             .environment(\.colorScheme, values.colorScheme)
-            .environment(\.locale, values.locale)
-            .environment(\.accessibilityEnabled, values.accessibilityEnabled)
     }
     
     private func copyDefaultSettings() {
@@ -41,11 +58,21 @@ struct EnvironmentOverridesModifier: ViewModifier {
     private var settings: SettingsView.Params {
         return SettingsView.Params(
             locales: EnvironmentValues.supportedLocales,
-            locale: $values.locale,
-            colorScheme: $values.colorScheme,
-            textSize: $values.sizeCategory,
-            layoutDirection: $values.layoutDirection,
-            accessibilityEnabled: $values.accessibilityEnabled)
+            locale: $values.locale.onChange({ _ in
+                self.onChange?(.locale)
+            }),
+            colorScheme: $values.colorScheme.onChange({ _ in
+                self.onChange?(.colorScheme)
+            }),
+            textSize: $values.sizeCategory.onChange({ _ in
+                self.onChange?(.sizeCategory)
+            }),
+            layoutDirection: $values.layoutDirection.onChange({ _ in
+                self.onChange?(.layoutDirection)
+            }),
+            accessibilityEnabled: $values.accessibilityEnabled.onChange({ _ in
+                self.onChange?(.accessibilityEnabled)
+            }))
     }
 }
 
