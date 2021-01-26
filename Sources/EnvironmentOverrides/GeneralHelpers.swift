@@ -99,10 +99,13 @@ extension ScreenshotGenerator {
     @discardableResult
     static func takeScreenshot() -> Bool {
         #if !os(macOS)
-        let view = UIScreen.main.snapshotView(afterScreenUpdates: false)
-        let renderer = UIGraphicsImageRenderer(size: view.bounds.size)
+        let renderer = UIGraphicsImageRenderer(size: UIScreen.main.bounds.size)
         let image = renderer.image { _ in
-            view.drawHierarchy(in: view.bounds, afterScreenUpdates: true)
+            UIApplication.shared.windows
+                .sorted(by: { $0.windowLevel.rawValue < $1.windowLevel.rawValue })
+                .forEach { window in
+                    window.drawHierarchy(in: window.frame, afterScreenUpdates: false)
+                }
         }
         UIImageWriteToSavedPhotosAlbum(image, nil, nil, nil)
         #endif
