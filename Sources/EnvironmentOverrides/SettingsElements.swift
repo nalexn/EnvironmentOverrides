@@ -50,12 +50,13 @@ extension SettingsView {
         
         var body: some View {
             ZStack {
-                if !isLoaded {
-                    Text("")
-                } else {
+                if isLoaded {
                     self.content
+                } else {
+                    EmptyView()
                 }
-            }.onAppear { self.isLoaded = true }
+            }
+            .onAppear { self.isLoaded = true }
             .onDisappear { self.isLoaded = false }
         }
 
