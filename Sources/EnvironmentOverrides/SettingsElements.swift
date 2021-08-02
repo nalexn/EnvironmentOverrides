@@ -46,8 +46,20 @@ extension SettingsView {
         let value: Binding<CGFloat>
         let stride: CGFloat
         let valueTitle: () -> String
+        @State private var isLoaded: Bool = false
         
         var body: some View {
+            ZStack {
+                if !isLoaded {
+                    Text("")
+                } else {
+                    self.content
+                }
+            }.onAppear { self.isLoaded = true }
+            .onDisappear { self.isLoaded = false }
+        }
+
+        var content: some View {
             HStack {
                 Text(title).settingsStyle()
                 Spacer(minLength: 8)
@@ -59,6 +71,7 @@ extension SettingsView {
                         .offset(x: 0, y: 20))
             }
         }
+
     }
 }
 
